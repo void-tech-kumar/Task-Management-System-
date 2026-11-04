@@ -316,7 +316,7 @@ export const LoginPage: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => handleQuickDemo('alex.chen@taskflow.edu', 'Student@123')}
+                    onClick={() => handleQuickDemo('emily.davis@taskflow.edu', 'Student@123')}
                     className="flex flex-col items-center justify-center p-2 rounded-lg bg-white border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 transition-all text-center group"
                   >
                     <UserCheck className="w-4 h-4 text-emerald-600 mb-1" />
