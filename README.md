@@ -91,3 +91,4 @@ npm run dev
 5. **Collaborative Discussion Threads**: Task-level comment threads with real-time in-app alerts for assignees and instructors.
 6. **Deadline Warnings**: Automated alerts for tasks due within 24–48 hours.
 7. **Institutional User Directory**: Admin control panel for provisioning users and updating roles.
+

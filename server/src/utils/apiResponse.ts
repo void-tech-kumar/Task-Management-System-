@@ -19,3 +19,4 @@ export const sendResponse = <T>({
     data,
   });
 };
+

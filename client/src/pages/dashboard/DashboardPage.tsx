@@ -352,6 +352,7 @@ export const DashboardPage: React.FC = () => {
                 key={t.id}
                 task={t}
                 index={idx}
+                isDraggable={false}
                 onClick={() => setSelectedTask(t)}
               />
             ))}
@@ -381,3 +382,4 @@ export const DashboardPage: React.FC = () => {
     </div>
   );
 };
+

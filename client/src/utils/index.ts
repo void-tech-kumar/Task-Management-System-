@@ -95,3 +95,4 @@ export const submissionStatusConfig: Record<SubmissionStatus, { label: string; b
   EVALUATED: { label: 'Evaluated', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   RESUBMIT_REQUESTED: { label: 'Resubmit Requested', badge: 'bg-rose-50 text-rose-700 border-rose-200' },
 };
+

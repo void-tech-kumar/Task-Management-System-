@@ -18,3 +18,4 @@ export const updateUserSchema = z.object({
     password: z.string().min(6).optional(),
   }),
 });
+

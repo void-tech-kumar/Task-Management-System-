@@ -38,3 +38,4 @@ router.delete('/:id/members/:userId', authorize('ADMIN', 'FACULTY'), removeProje
 router.delete('/:id', authorize('ADMIN', 'FACULTY'), deleteProject);
 
 export default router;
+

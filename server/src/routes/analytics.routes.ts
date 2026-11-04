@@ -9,3 +9,4 @@ router.use(authenticate);
 router.get('/dashboard', getDashboardStats);
 
 export default router;
+

@@ -32,3 +32,4 @@ router.patch('/:id', authorize('ADMIN', 'FACULTY'), validate(updateTaskSchema), 
 router.delete('/:id', authorize('ADMIN', 'FACULTY'), deleteTask);
 
 export default router;
+

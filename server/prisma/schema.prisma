@@ -200,3 +200,4 @@ model Notification {
 
   @@index([userId, isRead])
 }
+

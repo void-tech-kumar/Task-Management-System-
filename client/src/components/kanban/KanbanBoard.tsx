@@ -55,3 +55,4 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
     </DragDropContext>
   );
 };
+

@@ -52,3 +52,4 @@ export const authenticate = async (
     return next(new AppError('Invalid or expired authentication token. Please log in again.', 401));
   }
 };
+

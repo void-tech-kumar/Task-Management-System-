@@ -43,3 +43,4 @@ export const errorHandler = (
     ...(ENV.NODE_ENV === 'development' && { stack: err.stack }),
   });
 };
+

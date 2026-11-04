@@ -45,3 +45,4 @@ export const createBulkNotifications = async (
     console.error('Error creating bulk notifications:', error);
   }
 };
+

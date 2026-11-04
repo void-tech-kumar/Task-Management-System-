@@ -27,3 +27,4 @@ router.patch('/:id', authorize('ADMIN'), validate(updateUserSchema), updateUser)
 router.delete('/:id', authorize('ADMIN'), deleteUser);
 
 export default router;
+

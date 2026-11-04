@@ -15,3 +15,4 @@ router.patch('/:id/read', markAsRead);
 router.patch('/read-all', markAllAsRead);
 
 export default router;
+

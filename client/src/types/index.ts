@@ -190,3 +190,4 @@ export interface StudentMetrics {
 }
 
 export type DashboardMetrics = AdminMetrics | FacultyMetrics | StudentMetrics;
+

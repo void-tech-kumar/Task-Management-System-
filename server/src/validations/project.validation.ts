@@ -28,3 +28,4 @@ export const addProjectMembersSchema = z.object({
     studentIds: z.array(z.string().uuid()).min(1, 'Provide at least one student ID'),
   }),
 });
+

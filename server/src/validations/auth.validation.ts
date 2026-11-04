@@ -16,3 +16,4 @@ export const registerSchema = z.object({
     department: z.string().optional(),
   }),
 });
+

@@ -20,3 +20,4 @@ router.use('/notifications', notificationRoutes);
 router.use('/analytics', analyticsRoutes);
 
 export default router;
+

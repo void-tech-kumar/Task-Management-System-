@@ -21,3 +21,4 @@ export const authorize = (...roles: Role[]) => {
     next();
   };
 };
+
