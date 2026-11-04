@@ -13,7 +13,7 @@ import {
 } from '../types';
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -44,6 +44,20 @@ export const authApi = {
     api.post<{ success: boolean; data: { user: User; token: string } }>('/auth/register', data),
   logout: () => api.post('/auth/logout'),
   getMe: () => api.get<{ success: boolean; data: { user: User } }>('/auth/me'),
+
+  // Email OTP Authentication
+  signupInit: (data: { email: string; password: string; fullName: string; department?: string }) =>
+    api.post<{ success: boolean; message: string; data: { email: string; expiresAt: string; resendAfter: string; smtpConfigured: boolean } }>('/auth/signup/init', data),
+  signupVerify: (data: { email: string; otp: string }) =>
+    api.post<{ success: boolean; message: string; data: { user: User; token: string } }>('/auth/signup/verify', data),
+  loginOtpInit: (data: { email: string }) =>
+    api.post<{ success: boolean; message: string; data: { email: string; expiresAt: string; resendAfter: string; smtpConfigured: boolean } }>('/auth/login/otp/init', data),
+  loginOtpVerify: (data: { email: string; otp: string }) =>
+    api.post<{ success: boolean; message: string; data: { user: User; token: string } }>('/auth/login/otp/verify', data),
+  resendOtp: (data: { email: string; purpose: 'STUDENT_SIGNUP' | 'LOGIN' | 'PASSWORD_RESET' }) =>
+    api.post<{ success: boolean; message: string; data: { email: string; expiresAt: string; resendAfter: string; smtpConfigured: boolean } }>('/auth/otp/resend', data),
+  getSmtpStatus: () =>
+    api.get<{ success: boolean; data: { configured: boolean; connected?: boolean; status?: string; message: string } }>('/auth/smtp-status'),
 };
 
 /* ==================== USERS ==================== */

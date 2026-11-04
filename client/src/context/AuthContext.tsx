@@ -10,6 +10,7 @@ interface AuthContextType {
   register: (data: { email: string; password: string; fullName: string; role?: Role; department?: string }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  setUserDirect: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -79,6 +80,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const setUserDirect = (newUser: User) => {
+    setUser(newUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -89,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         refreshUser,
+        setUserDirect,
       }}
     >
       {children}

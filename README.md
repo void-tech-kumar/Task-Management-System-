@@ -17,9 +17,14 @@ Faculty orchestrate course curricula, assign milestone tasks, and grade student 
 [![Prisma](https://img.shields.io/badge/Prisma-6.4-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[Live Features](#-key-features) • [Architecture](#-system-architecture) • [Demo Credentials](#-pre-configured-demo-accounts) • [Quickstart](#-step-by-step-installation) • [API Specs](#-restful-api-endpoints)
+[Live Deployment](https://taskmanagerklu.vercel.app/) • [Audit Report](AUDIT_REPORT.md) • [Deployment Guide](DEPLOYMENT_GUIDE.md) • [Architecture](#-system-architecture) • [Demo Credentials](#-pre-configured-demo-accounts) • [API Specs](#-restful-api-endpoints)
 
 </div>
+
+---
+
+> 🚀 **Live Production URL:** [https://taskmanagerklu.vercel.app/](https://taskmanagerklu.vercel.app/)  
+> 🛡️ **Security Audit:** All 15 integration and security tests passed. Review the [Security Audit Report](AUDIT_REPORT.md).
 
 ---
 
