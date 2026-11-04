@@ -22,22 +22,22 @@ export const verifyToken = (token: string): TokenPayload => {
 };
 
 export const setAuthCookie = (res: Response, token: string): void => {
-  const isProduction = ENV.NODE_ENV === 'production';
+  const isProduction = ENV.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
   res.cookie('token', token, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: '/',
   });
 };
 
 export const clearAuthCookie = (res: Response): void => {
-  const isProduction = ENV.NODE_ENV === 'production';
+  const isProduction = ENV.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
   res.cookie('token', '', {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: 'lax',
     expires: new Date(0),
     path: '/',
   });

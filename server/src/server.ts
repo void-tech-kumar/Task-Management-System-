@@ -9,9 +9,26 @@ import { prisma } from './config/db.js';
 const app = express();
 
 // Security and utility middleware
+const allowedOrigins = [
+  ENV.CLIENT_URL,
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
+
 app.use(
   cors({
-    origin: [ENV.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., same-origin, curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        Boolean(process.env.VERCEL)
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -47,20 +64,22 @@ app.use(errorHandler);
 
 const PORT = ENV.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 TaskFlow Backend running on port ${PORT} [${ENV.NODE_ENV}]`);
-  console.log(`🔗 API Base: http://localhost:${PORT}/api/v1`);
-});
-
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('Stopping TaskFlow server...');
-  await prisma.$disconnect();
-  server.close(() => {
-    console.log('Server stopped cleanly.');
-    process.exit(0);
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 TaskFlow Backend running on port ${PORT} [${ENV.NODE_ENV}]`);
+    console.log(`🔗 API Base: http://localhost:${PORT}/api/v1`);
   });
-});
+
+  // Graceful shutdown
+  process.on('SIGINT', async () => {
+    console.log('Stopping TaskFlow server...');
+    await prisma.$disconnect();
+    server.close(() => {
+      console.log('Server stopped cleanly.');
+      process.exit(0);
+    });
+  });
+}
 
 export default app;
 
