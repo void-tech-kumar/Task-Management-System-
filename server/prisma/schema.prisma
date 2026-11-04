@@ -1,0 +1,202 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  FACULTY
+  STUDENT
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskCategory {
+  ASSIGNMENT
+  LAB_WORK
+  PROJECT_MILESTONE
+  READING
+  PERSONAL
+}
+
+enum SubmissionStatus {
+  PENDING
+  SUBMITTED
+  EVALUATED
+  RESUBMIT_REQUESTED
+}
+
+enum NotificationType {
+  DEADLINE_APPROACHING
+  TASK_ASSIGNED
+  SUBMISSION_EVALUATED
+  COMMENT_POSTED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  role         Role     @default(STUDENT)
+  department   String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  projectsCreated Project[]        @relation("FacultyProjects")
+  memberships     ProjectMember[]
+  createdTasks    Task[]           @relation("TaskCreator")
+  assignedTasks   TaskAssignment[]
+  submissions     TaskSubmission[] @relation("StudentSubmissions")
+  evaluations     TaskSubmission[] @relation("FacultyEvaluations")
+  comments        TaskComment[]
+  notifications   Notification[]
+
+  @@index([role])
+  @@index([email])
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  title       String
+  code        String        @unique
+  description String?
+  department  String?
+  facultyId   String
+  faculty     User          @relation("FacultyProjects", fields: [facultyId], references: [id], onDelete: Restrict)
+  startDate   DateTime?
+  endDate     DateTime?
+  status      ProjectStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  members ProjectMember[]
+  tasks   Task[]
+
+  @@index([facultyId])
+  @@index([status])
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime @default(now())
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  creatorId   String
+  creator     User         @relation("TaskCreator", fields: [creatorId], references: [id])
+  status      TaskStatus   @default(TODO)
+  priority    Priority     @default(MEDIUM)
+  category    TaskCategory @default(ASSIGNMENT)
+  dueDate     DateTime
+  orderIndex  Int          @default(0)
+  maxPoints   Int          @default(100)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  assignments TaskAssignment[]
+  submissions TaskSubmission[]
+  comments    TaskComment[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model TaskAssignment {
+  id         String   @id @default(uuid())
+  taskId     String
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedAt DateTime @default(now())
+
+  @@unique([taskId, userId])
+  @@index([taskId])
+  @@index([userId])
+}
+
+model TaskSubmission {
+  id            String           @id @default(uuid())
+  taskId        String
+  task          Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       User             @relation("StudentSubmissions", fields: [studentId], references: [id], onDelete: Cascade)
+  content       String?
+  attachmentUrl String?
+  status        SubmissionStatus @default(SUBMITTED)
+  grade         Float?
+  feedback      String?
+  evaluatorId   String?
+  evaluator     User?            @relation("FacultyEvaluations", fields: [evaluatorId], references: [id])
+  evaluatedAt   DateTime?
+  submittedAt   DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@unique([taskId, studentId])
+  @@index([taskId])
+  @@index([studentId])
+}
+
+model TaskComment {
+  id        String   @id @default(uuid())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+}
+
+model Notification {
+  id           String           @id @default(uuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  message      String
+  type         NotificationType
+  isRead       Boolean          @default(false)
+  referenceUrl String?
+  createdAt    DateTime         @default(now())
+
+  @@index([userId, isRead])
+}
