@@ -5,15 +5,14 @@
   "type": "module",
   "main": "src/server.ts",
   "scripts": {
-    "postinstall": "prisma generate",
     "dev": "tsx watch src/server.ts",
-    "build": "prisma generate && tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:push": "prisma db push",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:push": "npx prisma db push",
     "prisma:seed": "tsx prisma/seed.ts",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
@@ -24,6 +23,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^10.3.1",
+    "prisma": "^6.4.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -34,7 +34,6 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.5",
     "@types/nodemailer": "^8.0.2",
-    "prisma": "^6.4.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }
