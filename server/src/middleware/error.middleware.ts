@@ -12,6 +12,17 @@ export const errorHandler = (
   let message = err.message || 'Internal Server Error';
   let errors = err.errors;
 
+  // Handle Prisma initialization / connection errors
+  if (
+    err.name === 'PrismaClientInitializationError' ||
+    err.message?.includes('Environment variable not found: DATABASE_URL') ||
+    err.message?.includes("Can't reach database server")
+  ) {
+    statusCode = 500;
+    message =
+      'Database connection failed. Please ensure DATABASE_URL is properly configured in Vercel Project Settings -> Environment Variables.';
+  }
+
   // Handle Prisma unique constraint violation (P2002)
   if (err.code === 'P2002') {
     statusCode = 409;

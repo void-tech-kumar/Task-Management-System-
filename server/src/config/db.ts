@@ -6,13 +6,34 @@ declare global {
   var prismaGlobal: PrismaClient | undefined;
 }
 
-export const prisma =
-  globalThis.prismaGlobal ??
-  new PrismaClient({
+function initPrisma(): PrismaClient {
+  const dbUrl = process.env.DATABASE_URL || ENV.DATABASE_URL;
+  if (!dbUrl) {
+    console.error(
+      '⚠️ [CRITICAL] DATABASE_URL is not set in environment! Please add DATABASE_URL in Vercel Project Settings -> Environment Variables.'
+    );
+  }
+
+  return new PrismaClient({
     log: ENV.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
-
-if (ENV.NODE_ENV !== 'production') {
-  globalThis.prismaGlobal = prisma;
 }
 
+function getPrisma(): PrismaClient {
+  if (!globalThis.prismaGlobal) {
+    globalThis.prismaGlobal = initPrisma();
+  }
+  return globalThis.prismaGlobal;
+}
+
+// Proxy wrapper so Prisma is lazy-loaded on first database query rather than crashing module import
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop: keyof PrismaClient) {
+    const client = getPrisma();
+    const value = (client as any)[prop];
+    if (typeof value === 'function') {
+      return value.bind(client);
+    }
+    return value;
+  },
+});

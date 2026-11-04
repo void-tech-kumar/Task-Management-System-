@@ -40,16 +40,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Health Check
-app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get(['/health', '/api/health'], (_req, res) => {
+  const dbConfigured = Boolean(process.env.DATABASE_URL || ENV.DATABASE_URL);
+  res.status(200).json({
+    status: 'ok',
+    databaseConfigured: dbConfigured,
+    message: dbConfigured
+      ? 'TaskFlow API and Database connection configured.'
+      : 'DATABASE_URL is missing in environment variables. Configure it in Vercel Project Settings.',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Mount API routes
 app.use('/api/v1', routes);
 app.use('/api', routes);
+app.use('/v1', routes);
+app.use('/', routes);
 
 // 404 Handler
 app.use((req, res) => {

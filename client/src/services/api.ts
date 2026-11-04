@@ -24,9 +24,13 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const serverMessage = error.response?.data?.message;
+    const is500 = error.response?.status === 500;
     const message =
-      error.response?.data?.message ||
-      error.message ||
+      serverMessage ||
+      (is500
+        ? 'Backend database error. Please verify DATABASE_URL is set in Vercel Environment Variables.'
+        : error.message) ||
       'An unexpected error occurred. Please try again.';
     return Promise.reject(new Error(message));
   }
