@@ -8,8 +8,8 @@
     "server": {
       "root": "server",
       "framework": "express",
-      "buildCommand": "npm run build",
-      "entrypoint": "dist/server.js"
+      "buildCommand": "npx prisma generate",
+      "entrypoint": "src/server.ts"
     }
   },
   "rewrites": [
