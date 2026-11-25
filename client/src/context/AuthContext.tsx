@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Role } from '../types';
+import { User } from '../types';
 import { authApi } from '../services/api';
 
 interface AuthContextType {
@@ -7,10 +7,8 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (data: { email: string; password: string; fullName: string; role?: Role; department?: string }) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
-  setUserDirect: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await authApi.getMe();
       setUser(res.data.data.user);
       setError(null);
-    } catch (err: any) {
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
@@ -50,26 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (data: {
-    email: string;
-    password: string;
-    fullName: string;
-    role?: Role;
-    department?: string;
-  }) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await authApi.register(data);
-      setUser(res.data.data.user);
-    } catch (err: any) {
-      setError(err.message || 'Registration failed');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const logout = async () => {
     try {
       await authApi.logout();
@@ -80,10 +58,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const setUserDirect = (newUser: User) => {
-    setUser(newUser);
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -91,10 +65,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loading,
         error,
         login,
-        register,
         logout,
         refreshUser,
-        setUserDirect,
       }}
     >
       {children}
@@ -109,4 +81,3 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
-

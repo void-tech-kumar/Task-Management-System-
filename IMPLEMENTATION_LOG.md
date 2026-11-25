@@ -91,3 +91,14 @@
 | `DEPLOYMENT_GUIDE.md` | Created | Production and local deployment instructions. |
 | `README.md` | Modified | Updated project documentation and feature overview. |
 
+
+---
+
+### Task 4: Authentication Hardening (Email/Password + Admin-Only Provisioning)
+- Removed OTP authentication, email verification, resend OTP, SMTP services (`email.service.ts`, `otp.service.ts`), and public student registration endpoints (`/auth/register`, `/auth/signup/*`, `/auth/login/otp/*`, `/auth/otp/resend`, `/auth/smtp-status`).
+- Removed `nodemailer` and `@types/nodemailer` dependencies from `server/package.json` and `package-lock.json`.
+- Removed `SMTP_*` and `OTP_SECRET` configuration from `server/src/config/env.ts`, `server/.env`, and `server/.env.example`.
+- Simplified `client/src/pages/auth/LoginPage.tsx` to email/password login with JWT sessions, removed demo quick-login buttons and hardcoded default passwords, and added `"Contact your administrator for account access"`.
+- Removed hardcoded default password from `client/src/components/admin/CreateUserModal.tsx`; preserved Admin-only user creation for `ADMIN`, `FACULTY`, and `STUDENT` roles via `/api/v1/users`.
+- Preserved all existing Neon PostgreSQL tables and records without dropping tables or resetting the database.
+- Updated `server/scripts/test-integration.mjs`, `README.md`, and `DEPLOYMENT_GUIDE.md`.

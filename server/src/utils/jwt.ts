@@ -10,15 +10,23 @@ export interface TokenPayload {
   fullName: string;
 }
 
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET || ENV.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not configured in environment variables.');
+  }
+  return secret;
+}
+
 export const signToken = (payload: TokenPayload): string => {
   const options: SignOptions = {
     expiresIn: (ENV.JWT_EXPIRES_IN as any) || '7d',
   };
-  return jwt.sign(payload, ENV.JWT_SECRET, options);
+  return jwt.sign(payload, getJwtSecret(), options);
 };
 
 export const verifyToken = (token: string): TokenPayload => {
-  return jwt.verify(token, ENV.JWT_SECRET) as TokenPayload;
+  return jwt.verify(token, getJwtSecret()) as TokenPayload;
 };
 
 export const setAuthCookie = (res: Response, token: string): void => {

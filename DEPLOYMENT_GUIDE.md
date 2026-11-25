@@ -1,6 +1,6 @@
 # TaskFlow Deployment & Configuration Guide
 
-This guide covers setting up TaskFlow locally and deploying to Vercel with Neon PostgreSQL and SMTP email authentication.
+This guide covers setting up TaskFlow locally and deploying to Vercel with Neon PostgreSQL and JWT email/password authentication.
 
 ---
 
@@ -9,7 +9,6 @@ This guide covers setting up TaskFlow locally and deploying to Vercel with Neon 
 - **Node.js:** v18.x, v20.x, or v22.x
 - **Package Manager:** npm or yarn
 - **Database:** [Neon PostgreSQL](https://neon.tech)
-- **SMTP Account:** Gmail (with App Password), SendGrid, Mailgun, or any standard SMTP server
 
 ---
 
@@ -32,17 +31,6 @@ DIRECT_URL="postgresql://neondb_owner:[PASSWORD]@[HOST].neon.tech/neondb?sslmode
 # JWT Authentication
 JWT_SECRET=your_secure_random_64_character_hex_secret
 JWT_EXPIRES_IN=7d
-
-# SMTP Email Configuration (Nodemailer)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_specific_password
-SMTP_FROM="TaskFlow Academic Portal <noreply@taskflow.edu>"
-
-# OTP HMAC Hashing Secret (Hex string)
-OTP_SECRET=your_secure_random_64_character_hex_secret
 
 # Optional: Neon S3-Compatible Storage
 AWS_ENDPOINT_URL_S3=https://[STORAGE_HOST].neon.tech
@@ -111,14 +99,8 @@ git push origin main
 | `DATABASE_URL` | Neon PostgreSQL pooled URL | `postgresql://neondb_owner:...@ep-...-pooler.neon.tech/neondb?sslmode=require` |
 | `DIRECT_URL` | Neon direct URL | `postgresql://neondb_owner:...@ep-....neon.tech/neondb?sslmode=require` |
 | `JWT_SECRET` | 256-bit Hex JWT Secret | Generated random 64-char string |
-| `OTP_SECRET` | 256-bit Hex OTP Secret | Generated random 64-char string |
 | `NODE_ENV` | Environment mode | `production` |
-| `SMTP_HOST` | SMTP server host | `smtp.gmail.com` |
-| `SMTP_PORT` | SMTP port | `587` |
-| `SMTP_SECURE` | Secure flag | `false` |
-| `SMTP_USER` | SMTP username | `your_email@gmail.com` |
-| `SMTP_PASS` | SMTP app password | `your_16_char_app_password` |
-| `SMTP_FROM` | Sender address | `"TaskFlow Portal <noreply@taskflow.edu>"` |
+| `CLIENT_URL` | Production site URL | `https://taskmanagerklu.vercel.app` |
 
 ### 4.3 Step 3: Trigger Redeployment
 1. In the Vercel Dashboard, go to **Deployments**.

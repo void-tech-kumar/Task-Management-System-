@@ -1,7 +1,6 @@
 import http from 'http';
 import app from '../dist/server.js';
 import { prisma } from '../dist/config/db.js';
-import { OtpService } from '../dist/services/otp.service.js';
 
 let server;
 let baseUrl;
@@ -41,6 +40,7 @@ function recordTest(name, category, passed, details) {
 
 async function runTests() {
   await startServer();
+  const createdUserIds = [];
 
   try {
     // TEST 1: Health check
@@ -64,7 +64,7 @@ async function runTests() {
     recordTest(
       'Admin Authentication',
       'AUTH',
-      adminLoginRes.status === 200 && adminLoginData.data?.user?.role === 'ADMIN',
+      adminLoginRes.status === 200 && adminLoginData.data?.user?.role === 'ADMIN' && Boolean(adminToken),
       `Authenticated as ${adminLoginData.data?.user?.email} (${adminLoginData.data?.user?.role})`
     );
 
@@ -79,7 +79,7 @@ async function runTests() {
     recordTest(
       'Faculty Authentication',
       'AUTH',
-      facultyLoginRes.status === 200 && facultyLoginData.data?.user?.role === 'FACULTY',
+      facultyLoginRes.status === 200 && facultyLoginData.data?.user?.role === 'FACULTY' && Boolean(facultyToken),
       `Authenticated as ${facultyLoginData.data?.user?.email}`
     );
 
@@ -87,29 +87,162 @@ async function runTests() {
     const studentLoginRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'alex.chen@taskflow.edu', password: 'Student@123' }),
+      body: JSON.stringify({ email: 'emily.davis@taskflow.edu', password: 'Student@123' }),
     });
     const studentLoginData = await studentLoginRes.json();
     const studentToken = studentLoginData.data?.token;
     recordTest(
       'Student Authentication',
       'AUTH',
-      studentLoginRes.status === 200 && studentLoginData.data?.user?.role === 'STUDENT',
+      studentLoginRes.status === 200 && studentLoginData.data?.user?.role === 'STUDENT' && Boolean(studentToken),
       `Authenticated as ${studentLoginData.data?.user?.email}`
     );
 
-    // TEST 5: RBAC - Student forbidden from Admin API
+    // TEST 5: Removed Public Registration & OTP Endpoints Return 404
+    const removedEndpoints = [
+      { method: 'POST', path: '/api/v1/auth/register' },
+      { method: 'POST', path: '/api/v1/auth/signup/init' },
+      { method: 'POST', path: '/api/v1/auth/signup/verify' },
+      { method: 'POST', path: '/api/v1/auth/login/otp/init' },
+      { method: 'POST', path: '/api/v1/auth/login/otp/verify' },
+      { method: 'POST', path: '/api/v1/auth/otp/resend' },
+      { method: 'GET', path: '/api/v1/auth/smtp-status' },
+    ];
+    const removedStatuses = await Promise.all(
+      removedEndpoints.map(async (ep) => {
+        const res = await fetch(`${baseUrl}${ep.path}`, {
+          method: ep.method,
+          headers: { 'Content-Type': 'application/json' },
+          body: ep.method === 'POST' ? JSON.stringify({}) : undefined,
+        });
+        return { ...ep, status: res.status };
+      })
+    );
+    const allRemoved404 = removedStatuses.every((r) => r.status === 404);
+    recordTest(
+      'Public Registration & OTP Endpoints Removed',
+      'SECURITY',
+      allRemoved404,
+      `All ${removedEndpoints.length} removed endpoints returned 404`
+    );
+
+    // TEST 6: Unauthenticated Account Creation Blocked (401)
+    const unauthCreateRes = await fetch(`${baseUrl}/api/v1/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'unauth@taskflow.edu',
+        password: 'Password@123',
+        fullName: 'Unauth User',
+        role: 'STUDENT',
+      }),
+    });
+    recordTest(
+      'Unauthenticated User Creation Blocked',
+      'SECURITY',
+      unauthCreateRes.status === 401,
+      `Unauthenticated POST /api/v1/users returned ${unauthCreateRes.status}`
+    );
+
+    // TEST 7: Student Forbidden from Creating Accounts (403)
+    const studentCreateRes = await fetch(`${baseUrl}/api/v1/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${studentToken}`,
+      },
+      body: JSON.stringify({
+        email: 'student_attempt@taskflow.edu',
+        password: 'Password@123',
+        fullName: 'Student Attempt',
+        role: 'STUDENT',
+      }),
+    });
+    recordTest(
+      'Student Forbidden from Creating Accounts',
+      'SECURITY',
+      studentCreateRes.status === 403,
+      `Student POST /api/v1/users returned ${studentCreateRes.status}`
+    );
+
+    // TEST 8: Faculty Forbidden from Creating Accounts (403)
+    const facultyCreateRes = await fetch(`${baseUrl}/api/v1/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${facultyToken}`,
+      },
+      body: JSON.stringify({
+        email: 'faculty_attempt@taskflow.edu',
+        password: 'Password@123',
+        fullName: 'Faculty Attempt',
+        role: 'STUDENT',
+      }),
+    });
+    recordTest(
+      'Faculty Forbidden from Creating Accounts',
+      'SECURITY',
+      facultyCreateRes.status === 403,
+      `Faculty POST /api/v1/users returned ${facultyCreateRes.status}`
+    );
+
+    // TEST 9: Admin Can Create Admin, Faculty, and Student Accounts
+    const rolesToTest = ['ADMIN', 'FACULTY', 'STUDENT'];
+    let allRolesCreatedAndVerified = true;
+    for (const role of rolesToTest) {
+      const testEmail = `test_${role.toLowerCase()}_${Date.now()}@taskflow.edu`;
+      const testPassword = 'TestUser@123';
+      const createRes = await fetch(`${baseUrl}/api/v1/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({
+          email: testEmail,
+          password: testPassword,
+          fullName: `Integration ${role}`,
+          role,
+          department: 'Computer Science',
+        }),
+      });
+      const createData = await createRes.json();
+      if (createRes.status !== 201 || createData.data?.user?.role !== role) {
+        allRolesCreatedAndVerified = false;
+        break;
+      }
+      createdUserIds.push(createData.data.user.id);
+
+      // Verify newly created user can log in via email + password
+      const loginCheck = await fetch(`${baseUrl}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: testEmail, password: testPassword }),
+      });
+      if (loginCheck.status !== 200) {
+        allRolesCreatedAndVerified = false;
+        break;
+      }
+    }
+    recordTest(
+      'Admin User Provisioning (ADMIN, FACULTY, STUDENT)',
+      'ADMIN',
+      allRolesCreatedAndVerified && createdUserIds.length === 3,
+      `Created and authenticated all 3 roles via POST /api/v1/users`
+    );
+
+    // TEST 10: RBAC - Student forbidden from Admin Directory
     const rbacRes = await fetch(`${baseUrl}/api/v1/users`, {
       headers: { Authorization: `Bearer ${studentToken}` },
     });
     recordTest(
-      'RBAC Student Denied Admin Access',
+      'RBAC Student Denied Admin Directory',
       'SECURITY',
       rbacRes.status === 403,
-      `Student access to /api/v1/users resulted in status ${rbacRes.status} (Forbidden)`
+      `Student access to GET /api/v1/users resulted in status ${rbacRes.status}`
     );
 
-    // TEST 6: Admin allowed on Admin API
+    // TEST 11: Admin allowed on Admin Directory
     const adminUsersRes = await fetch(`${baseUrl}/api/v1/users`, {
       headers: { Authorization: `Bearer ${adminToken}` },
     });
@@ -119,72 +252,6 @@ async function runTests() {
       'SECURITY',
       adminUsersRes.status === 200 && Array.isArray(adminUsersData.data?.users),
       `Admin retrieved ${adminUsersData.data?.users?.length} users`
-    );
-
-    // TEST 7: OTP Generation and Hashing
-    const testOtpEmail = 'test_student_otp@taskflow.edu';
-    const otpResult = await OtpService.createOtp(testOtpEmail, 'STUDENT_SIGNUP', {
-      fullName: 'Test Student',
-      department: 'Computer Science',
-    });
-    recordTest(
-      'OTP Generation & Expiry',
-      'OTP',
-      otpResult.otp.length === 6 && otpResult.expiresAt > new Date(),
-      `Generated 6-digit OTP (expires at ${otpResult.expiresAt.toISOString()})`
-    );
-
-    // TEST 8: OTP Cooldown Enforcement
-    let cooldownCaught = false;
-    try {
-      await OtpService.createOtp(testOtpEmail, 'STUDENT_SIGNUP');
-    } catch (err) {
-      if (err.statusCode === 429) cooldownCaught = true;
-    }
-    recordTest(
-      'OTP Cooldown (60s)',
-      'OTP',
-      cooldownCaught,
-      'Second immediate OTP request blocked with 429 Too Many Requests'
-    );
-
-    // TEST 9: Invalid OTP Rejection & Remaining Attempts
-    let invalidOtpCaught = false;
-    try {
-      await OtpService.verifyOtp(testOtpEmail, '000000', 'STUDENT_SIGNUP');
-    } catch (err) {
-      if (err.statusCode === 400 && err.message.includes('Invalid verification code')) {
-        invalidOtpCaught = true;
-      }
-    }
-    recordTest(
-      'Invalid OTP Rejection',
-      'OTP',
-      invalidOtpCaught,
-      'Tampered OTP correctly rejected with attempt countdown'
-    );
-
-    // TEST 10: Valid OTP Verification
-    const verifyResult = await OtpService.verifyOtp(testOtpEmail, otpResult.otp, 'STUDENT_SIGNUP');
-    recordTest(
-      'Valid OTP Verification',
-      'OTP',
-      verifyResult.success === true && verifyResult.metadata.fullName === 'Test Student',
-      'Valid OTP matched HMAC hash and consumed successfully'
-    );
-
-    // TEST 11: Single-Use OTP (Replay Prevention)
-    let replayCaught = false;
-    try {
-      await OtpService.verifyOtp(testOtpEmail, otpResult.otp, 'STUDENT_SIGNUP');
-    } catch (err) {
-      if (err.statusCode === 400) replayCaught = true;
-    }
-    recordTest(
-      'Single-Use OTP Replay Protection',
-      'SECURITY',
-      replayCaught,
-      'Reusing consumed OTP was immediately rejected'
     );
 
     // TEST 12: Projects Retrieval
@@ -211,7 +278,21 @@ async function runTests() {
       `Retrieved ${tasksData.data?.tasks?.length} tasks across projects`
     );
 
-    // TEST 14: Analytics Dashboard
+    // TEST 14: Submissions Retrieval
+    const pendingSubRes = await fetch(`${baseUrl}/api/v1/submissions/pending`, {
+      headers: { Authorization: `Bearer ${facultyToken}` },
+    });
+    const mySubRes = await fetch(`${baseUrl}/api/v1/submissions/my-submissions`, {
+      headers: { Authorization: `Bearer ${studentToken}` },
+    });
+    recordTest(
+      'Submissions Retrieval (Faculty & Student)',
+      'SUBMISSIONS',
+      pendingSubRes.status === 200 && mySubRes.status === 200,
+      `Faculty pending=${pendingSubRes.status}, Student my-submissions=${mySubRes.status}`
+    );
+
+    // TEST 15: Analytics Dashboard
     const analyticsRes = await fetch(`${baseUrl}/api/v1/analytics/dashboard`, {
       headers: { Authorization: `Bearer ${facultyToken}` },
     });
@@ -223,7 +304,40 @@ async function runTests() {
       `Calculated live metrics for role ${analyticsData.data?.role}`
     );
 
-    // TEST 15: SQL Injection Resistance
+    // TEST 16: Invalid Password Rejection
+    const badPassRes = await fetch(`${baseUrl}/api/v1/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'admin@taskflow.edu', password: 'WrongPassword123!' }),
+    });
+    recordTest(
+      'Invalid Password Rejection',
+      'SECURITY',
+      badPassRes.status === 401,
+      `Invalid password rejected with status ${badPassRes.status}`
+    );
+
+    // TEST 17: Session Persistence (/auth/me) & Logout Cookie Clearing
+    const setCookieHeader = adminLoginRes.headers.get('set-cookie') || '';
+    const tokenCookieMatch = setCookieHeader.match(/token=([^;]+)/);
+    const cookieHeader = tokenCookieMatch ? `token=${tokenCookieMatch[1]}` : '';
+    const meRes = await fetch(`${baseUrl}/api/v1/auth/me`, {
+      headers: cookieHeader ? { Cookie: cookieHeader } : { Authorization: `Bearer ${adminToken}` },
+    });
+    const meData = await meRes.json();
+    const logoutRes = await fetch(`${baseUrl}/api/v1/auth/logout`, {
+      method: 'POST',
+      headers: cookieHeader ? { Cookie: cookieHeader } : {},
+    });
+    const logoutCookie = logoutRes.headers.get('set-cookie') || '';
+    recordTest(
+      'Session Persistence & Logout',
+      'AUTH',
+      meRes.status === 200 && meData.data?.user?.email === 'admin@taskflow.edu' && logoutRes.status === 200 && logoutCookie.includes('token=;'),
+      `Verified /auth/me session and cookie clearing on /auth/logout`
+    );
+
+    // TEST 18: SQL Injection Resistance
     const sqliRes = await fetch(`${baseUrl}/api/v1/projects?search=' OR '1'='1`, {
       headers: { Authorization: `Bearer ${facultyToken}` },
     });
@@ -234,20 +348,23 @@ async function runTests() {
       sqliRes.status === 200 && Array.isArray(sqliData.data?.projects),
       'Malicious SQL pattern safely sanitized by Prisma ORM'
     );
-
-    // Clean up temporary OTP test record
-    await prisma.otpVerification.deleteMany({ where: { email: testOtpEmail } });
-
   } finally {
+    // Clean up only the temporary test users created in TEST 9
+    for (const id of createdUserIds) {
+      await prisma.user.delete({ where: { id } }).catch(() => {});
+    }
     await stopServer();
   }
 
-  const passedCount = testResults.filter(t => t.passed).length;
+  const passedCount = testResults.filter((t) => t.passed).length;
   const totalCount = testResults.length;
   console.log(`\n==================================================`);
   console.log(`TEST SUMMARY: ${passedCount}/${totalCount} PASSED`);
   console.log(`==================================================`);
+  process.exit(passedCount === totalCount ? 0 : 1);
 }
 
-runTests().catch(console.error);
-
+runTests().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

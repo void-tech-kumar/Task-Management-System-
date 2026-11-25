@@ -17,7 +17,7 @@ Faculty orchestrate course curricula, assign milestone tasks, and grade student 
 [![Prisma](https://img.shields.io/badge/Prisma-6.4-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[Live Deployment](https://taskmanagerklu.vercel.app/) • [Audit Report](AUDIT_REPORT.md) • [Deployment Guide](DEPLOYMENT_GUIDE.md) • [Architecture](#-system-architecture) • [Demo Credentials](#-pre-configured-demo-accounts) • [API Specs](#-restful-api-endpoints)
+[Live Deployment](https://taskmanagerklu.vercel.app/) • [Audit Report](AUDIT_REPORT.md) • [Deployment Guide](DEPLOYMENT_GUIDE.md) • [Architecture](#-system-architecture) • [Access Control](#-authentication--user-provisioning) • [API Specs](#-restful-api-endpoints)
 
 </div>
 
@@ -31,7 +31,7 @@ Faculty orchestrate course curricula, assign milestone tasks, and grade student 
 ## 📖 Table of Contents
 - [Official Problem Statement](#-official-problem-statement)
 - [Key Features](#-key-features)
-- [Pre-Configured Demo Accounts](#-pre-configured-demo-accounts)
+- [Authentication & User Provisioning](#-authentication--user-provisioning)
 - [System Architecture](#-system-architecture)
 - [Database Schema & ER Model](#-database-schema--er-model)
 - [Role-Based Access Control (RBAC)](#-role-based-access-control-rbac)
@@ -90,19 +90,13 @@ In universities and colleges, students struggle with disparate course requiremen
 
 ---
 
-## 👥 Pre-Configured Demo Accounts
+## 🔐 Authentication & User Provisioning
 
-TaskFlow includes a **One-Click Quick Login** selector on the login screen (`/login`). You can click any role to auto-fill credentials:
+TaskFlow uses **email and password authentication with JWT sessions** stored in secure `HttpOnly` cookies.
 
-| Role | Email | Password | Primary Mission |
-| :--- | :--- | :--- | :--- |
-| 👑 **Admin** | `admin@taskflow.edu` | `Admin@123` | Institutional directory, user provisioning, global analytics. |
-| 👨‍🏫 **Faculty (Lead)** | `robert.miller@taskflow.edu` | `Faculty@123` | Computer Science cohorts (`CS401`, `CS450`), task assignment & grading. |
-| 👩‍🏫 **Faculty (Lead)** | `sarah.jenkins@taskflow.edu` | `Faculty@123` | Software Engineering cohorts (`SE302`), rubric assessments. |
-| 🎓 **Student** | `alex.chen@taskflow.edu` | `Student@123` | CS major: Kanban board, deliverable submissions, deadline radar. |
-| 🎓 **Student** | `priya.sharma@taskflow.edu` | `Student@123` | CS major: Coursework tracking, discussions, notifications. |
-| 🎓 **Student** | `marcus.johnson@taskflow.edu` | `Student@123` | SE major: Collaborative milestone tracking. |
-| 🎓 **Student** | `emily.davis@taskflow.edu` | `Student@123` | SE major: Architecture labs & submissions. |
+- **No Public Self-Registration:** Public signup, OTP, and unauthenticated registration endpoints are disabled.
+- **Admin-Only Provisioning:** Only authenticated **Administrators** can create **Admin**, **Faculty**, and **Student** accounts through the **User Management** section (`/app/users` $\rightarrow$ `POST /api/v1/users`).
+- **Access Notice:** Unprovisioned users see `"Contact your administrator for account access"` on the login page.
 
 ---
 
@@ -205,7 +199,7 @@ Inside `server/.env`, verify or add your Neon connection string:
 PORT=5000
 NODE_ENV=development
 DATABASE_URL="postgresql://[user]:[password]@[neon-host]/neondb?sslmode=require"
-JWT_SECRET="taskflow_jwt_secret_academic_platform_key_2026"
+JWT_SECRET="replace_with_a_secure_random_64_character_hex_secret"
 JWT_EXPIRES_IN="7d"
 CLIENT_URL="http://localhost:5173"
 ```

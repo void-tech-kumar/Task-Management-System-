@@ -19,7 +19,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
 }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('Academic@123');
+  const [password, setPassword] = useState('');
   const [role, setRole] = useState<Role>('STUDENT');
   const [department, setDepartment] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -45,6 +45,8 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
 
       setFullName('');
       setEmail('');
+      setPassword('');
+      setRole('STUDENT');
       setDepartment('');
       onUserCreated();
       onClose();
@@ -85,6 +87,7 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
           label="Initial Password"
           type="password"
           required
+          placeholder="Minimum 6 characters"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
