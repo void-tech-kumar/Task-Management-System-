@@ -9,6 +9,7 @@ import { Badge } from '../../components/common/Badge';
 import { Spinner } from '../../components/common/Spinner';
 import { Plus, Search, Trash2, Users } from 'lucide-react';
 import { roleConfig, formatDate } from '../../utils';
+import { TABLE_THEMES } from '../../theme/theme';
 
 export const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -103,23 +104,23 @@ export const UsersPage: React.FC = () => {
       {loading ? (
         <Spinner label="Loading directory..." size="lg" className="my-16" />
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+        <div className={TABLE_THEMES.wrapper}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+              <thead className={TABLE_THEMES.thead}>
                 <tr>
-                  <th className="py-3 px-4">User</th>
-                  <th className="py-3 px-4">Email</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Department</th>
-                  <th className="py-3 px-4">Created Date</th>
-                  <th className="py-3 px-4 text-right">Action</th>
+                  <th className="py-3.5 px-4">User</th>
+                  <th className="py-3.5 px-4">Email</th>
+                  <th className="py-3.5 px-4">Role</th>
+                  <th className="py-3.5 px-4">Department</th>
+                  <th className="py-3.5 px-4">Created Date</th>
+                  <th className="py-3.5 px-4 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-200/80">
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-400">
+                    <td colSpan={6} className="py-8 text-center text-[#475569]">
                       No user accounts found matching your filters.
                     </td>
                   </tr>
@@ -127,25 +128,25 @@ export const UsersPage: React.FC = () => {
                   users.map((u) => {
                     const roleConf = roleConfig[u.role];
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3.5 px-4 font-semibold text-slate-900 flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs">
+                      <tr key={u.id} className={TABLE_THEMES.row}>
+                        <td className="py-3.5 px-4 font-semibold text-[#0F172A] flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-indigo-100 text-[#4F46E5] font-bold flex items-center justify-center text-xs">
                             {u.fullName[0].toUpperCase()}
                           </div>
                           {u.fullName}
                         </td>
-                        <td className="py-3.5 px-4 text-slate-600">{u.email}</td>
+                        <td className="py-3.5 px-4 text-[#475569]">{u.email}</td>
                         <td className="py-3.5 px-4">
-                          <span className={`inline-flex px-2 py-0.5 rounded-full font-semibold ${roleConf.badge}`}>
+                          <span className={`inline-flex px-2.5 py-0.5 rounded-full border font-semibold ${roleConf.badge}`}>
                             {roleConf.label}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 text-slate-500">{u.department || '—'}</td>
-                        <td className="py-3.5 px-4 text-slate-400">{formatDate(u.createdAt)}</td>
+                        <td className="py-3.5 px-4 text-[#475569]">{u.department || '—'}</td>
+                        <td className="py-3.5 px-4 text-[#475569]">{formatDate(u.createdAt)}</td>
                         <td className="py-3.5 px-4 text-right">
                           <button
                             onClick={() => handleDeleteUser(u.id, u.fullName)}
-                            className="text-slate-400 hover:text-rose-600 transition-colors"
+                            className="rounded-md p-1.5 text-[#475569] hover:text-[#DC2626] hover:bg-red-50 transition-colors"
                             title="Delete User"
                           >
                             <Trash2 className="w-4 h-4" />

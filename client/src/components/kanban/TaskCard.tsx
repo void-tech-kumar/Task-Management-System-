@@ -30,10 +30,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     <div
       onClick={onClick}
       className={cn(
-        'group relative rounded-xl border bg-white p-4 shadow-xs transition-all hover:border-slate-300 hover:shadow-md cursor-pointer select-none',
+        'group relative rounded-xl border bg-white p-4 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md cursor-pointer select-none',
         isDraggable ? 'mb-3' : '',
-        'border-slate-200/80',
-        dueInfo.isOverdue && 'border-rose-200/90'
+        dueInfo.isOverdue ? 'border-red-300' : 'border-[#CBD5E1]'
       )}
     >
       {/* Top Row: Category Tag & Priority Badge */}

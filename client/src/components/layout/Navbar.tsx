@@ -40,24 +40,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   if (!user) return null;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/95 px-4 sm:px-6 backdrop-blur transition-all">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#CBD5E1] bg-white px-4 sm:px-6 shadow-sm transition-all">
       {/* Left: Mobile hamburger & Brand */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden focus:outline-none"
+          className="rounded-lg p-2 text-[#475569] hover:bg-slate-100 hover:text-[#0F172A] lg:hidden focus:outline-none focus:ring-2 focus:ring-[#4F46E5]"
           aria-label="Toggle Navigation"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         <Link to="/app/dashboard" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          <div className="w-9 h-9 rounded-xl bg-[#4F46E5] flex items-center justify-center text-white font-bold text-lg shadow-sm">
             TF
           </div>
           <div className="hidden sm:block">
-            <span className="font-bold text-slate-900 tracking-tight text-base">TaskFlow</span>
-            <span className="text-[10px] font-semibold text-indigo-600 block leading-none tracking-widest uppercase">
+            <span className="font-bold text-[#0F172A] tracking-tight text-base">TaskFlow</span>
+            <span className="text-[10px] font-semibold text-[#2563EB] block leading-none tracking-widest uppercase">
               Academic Portal
             </span>
           </div>

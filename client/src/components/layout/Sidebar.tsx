@@ -94,28 +94,29 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar Panel */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-in-out lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-blue-950 bg-[#172554] text-slate-100 shadow-lg transition-transform duration-200 ease-in-out lg:static lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Mobile Header */}
-        <div className="flex h-16 items-center justify-between px-6 border-b border-slate-200 lg:hidden">
+        <div className="flex h-16 items-center justify-between px-6 border-b border-blue-900/80 lg:hidden">
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-indigo-600" />
-            <span className="font-bold text-slate-900 text-base">TaskFlow</span>
+            <Layers className="w-5 h-5 text-indigo-300" />
+            <span className="font-bold text-white text-base">TaskFlow</span>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            aria-label="Close Navigation"
+            className="rounded-lg p-1.5 text-blue-200 hover:text-white hover:bg-white/10"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation Section */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
           <div className="px-3 mb-3">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-blue-200/80">
               Workspace Menu
             </p>
           </div>
@@ -131,8 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   cn(
                     'group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all',
                     isActive
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-sm'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-[#4F46E5]/35 text-white font-semibold border border-indigo-400/40 shadow-sm'
+                      : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
                   )
                 }
               >
@@ -142,13 +143,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                       <Icon
                         className={cn(
                           'w-4 h-4 transition-colors',
-                          isActive ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'
+                          isActive ? 'text-indigo-200' : 'text-blue-200 group-hover:text-white'
                         )}
                       />
                       <span>{item.label}</span>
                     </div>
                     {item.badge !== undefined && (
-                      <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold text-white">
+                      <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#DC2626] px-1.5 text-[11px] font-bold text-white">
                         {item.badge}
                       </span>
                     )}
@@ -160,13 +161,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer Info Box */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-          <div className="rounded-xl bg-white p-3 border border-slate-200/60 shadow-xs">
-            <p className="text-xs font-semibold text-slate-900">TaskFlow Academic</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Role: <span className="font-medium text-indigo-600 capitalize">{user.role.toLowerCase()}</span></p>
-            <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="p-4 border-t border-blue-900/80 bg-blue-950/50">
+          <div className="rounded-xl bg-blue-950/80 p-3 border border-blue-800/70">
+            <p className="text-xs font-semibold text-white">TaskFlow Academic</p>
+            <p className="text-[11px] text-blue-200 mt-0.5">
+              Role: <span className="font-semibold text-indigo-300 capitalize">{user.role.toLowerCase()}</span>
+            </p>
+            <div className="mt-2 pt-2 border-t border-blue-900 flex items-center justify-between text-[11px] text-blue-200/80">
               <span>v1.0.0</span>
-              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" title="Connected" />
+              <span className="inline-block w-2 h-2 rounded-full bg-[#16A34A]" title="Connected" />
             </div>
           </div>
         </div>

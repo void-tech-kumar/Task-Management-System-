@@ -22,6 +22,8 @@ import {
   Plus,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { STAT_CARD_THEMES } from '../../theme/theme';
+import { cn } from '../../utils';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -132,44 +134,52 @@ export const DashboardPage: React.FC = () => {
       {/* METRICS ROW (ROLE ADAPTIVE) */}
       {user?.role === 'ADMIN' && metrics && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Total Users</span>
-              <Users className="w-4 h-4 text-purple-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.projects.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Active Projects</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.projects.iconWrap)}>
+                <FolderKanban className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.totalUsers}</div>
-            <p className="text-xs text-slate-500 mt-1">
-              {metrics.roleDistribution.faculty} Faculty • {metrics.roleDistribution.student} Students
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.projects.value)}>{metrics.activeProjects}</div>
+            <p className="text-xs text-[#475569] mt-1">Out of {metrics.totalProjects} total courses</p>
+          </Card>
+
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.tasks.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Total Users & Tasks</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.tasks.iconWrap)}>
+                <Users className="w-4 h-4" />
+              </span>
+            </div>
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.tasks.value)}>{metrics.totalUsers}</div>
+            <p className="text-xs text-[#475569] mt-1">
+              {metrics.roleDistribution.faculty} Faculty • {metrics.roleDistribution.student} Students • {metrics.totalTasks} Tasks
             </p>
           </Card>
 
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Active Projects</span>
-              <FolderKanban className="w-4 h-4 text-indigo-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.completed.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Completion Velocity</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.completed.iconWrap)}>
+                <CheckCircle2 className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.activeProjects}</div>
-            <p className="text-xs text-slate-500 mt-1">Out of {metrics.totalProjects} total courses</p>
-          </Card>
-
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Completion Velocity</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.globalCompletionRate}%</div>
-            <p className="text-xs text-slate-500 mt-1">
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.completed.value)}>{metrics.globalCompletionRate}%</div>
+            <p className="text-xs text-[#475569] mt-1">
               {metrics.completedTasks} / {metrics.totalTasks} Tasks completed
             </p>
           </Card>
 
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Evaluations Rate</span>
-              <Award className="w-4 h-4 text-amber-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.pending.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Evaluations Rate</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.pending.iconWrap)}>
+                <Award className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.evaluationRate}%</div>
-            <p className="text-xs text-slate-500 mt-1">
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.pending.value)}>{metrics.evaluationRate}%</div>
+            <p className="text-xs text-[#475569] mt-1">
               {metrics.evaluatedSubmissions} of {metrics.totalSubmissions} submissions graded
             </p>
           </Card>
@@ -178,44 +188,52 @@ export const DashboardPage: React.FC = () => {
 
       {user?.role === 'FACULTY' && metrics && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">My Courses</span>
-              <FolderKanban className="w-4 h-4 text-indigo-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.projects.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">My Courses</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.projects.iconWrap)}>
+                <FolderKanban className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.totalProjects}</div>
-            <p className="text-xs text-slate-500 mt-1">{metrics.totalStudentsEnrolled} Enrolled Students</p>
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.projects.value)}>{metrics.totalProjects}</div>
+            <p className="text-xs text-[#475569] mt-1">{metrics.totalStudentsEnrolled} Enrolled Students</p>
           </Card>
 
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Pending Evaluations</span>
-              <Clock className="w-4 h-4 text-amber-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.tasks.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Total Course Tasks</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.tasks.iconWrap)}>
+                <GraduationCap className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-amber-600">{metrics.pendingEvaluations}</div>
-            <Link to="/app/evaluations" className="text-xs text-indigo-600 hover:underline mt-1 inline-block font-semibold">
-              Open Grading Portal &rarr;
-            </Link>
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.tasks.value)}>{metrics.totalTasks}</div>
+            <p className="text-xs text-[#475569] mt-1">Cohort Avg Grade: {metrics.averageGradeGiven} pts</p>
           </Card>
 
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Task Completion</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.completed.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Task Completion</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.completed.iconWrap)}>
+                <CheckCircle2 className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.completionRate}%</div>
-            <p className="text-xs text-slate-500 mt-1">
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.completed.value)}>{metrics.completionRate}%</div>
+            <p className="text-xs text-[#475569] mt-1">
               {metrics.completedTasks} / {metrics.totalTasks} Tasks completed
             </p>
           </Card>
 
-          <Card className="p-5 border border-slate-200">
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider">Cohort Avg Grade</span>
-              <Award className="w-4 h-4 text-emerald-600" />
+          <Card className={cn('p-5 border', STAT_CARD_THEMES.pending.card)}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Pending Evaluations</span>
+              <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.pending.iconWrap)}>
+                <Clock className="w-4 h-4" />
+              </span>
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">{metrics.averageGradeGiven} pts</div>
-            <p className="text-xs text-slate-500 mt-1">Across all evaluated tasks</p>
+            <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.pending.value)}>{metrics.pendingEvaluations}</div>
+            <Link to="/app/evaluations" className="text-xs text-[#4F46E5] hover:underline mt-1 inline-block font-semibold">
+              Open Grading Portal &rarr;
+            </Link>
           </Card>
         </div>
       )}
@@ -223,12 +241,12 @@ export const DashboardPage: React.FC = () => {
       {user?.role === 'STUDENT' && metrics && (
         <div className="space-y-4">
           {metrics.overdueTasks > 0 && (
-            <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-between text-rose-800">
+            <div className="p-4 rounded-xl bg-red-50 border border-red-300 flex items-center justify-between text-red-900 shadow-sm">
               <div className="flex items-center gap-3">
-                <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
+                <AlertTriangle className="w-5 h-5 text-[#DC2626] shrink-0" />
                 <div>
                   <h4 className="text-sm font-bold">Action Required: You have {metrics.overdueTasks} overdue task(s)!</h4>
-                  <p className="text-xs text-rose-700">Please review your tasks board and submit pending deliverables.</p>
+                  <p className="text-xs text-red-800">Please review your tasks board and submit pending deliverables.</p>
                 </div>
               </div>
               <Link to="/app/tasks">
@@ -239,44 +257,65 @@ export const DashboardPage: React.FC = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="p-5 border border-slate-200">
-              <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">Enrolled Courses</span>
-                <FolderKanban className="w-4 h-4 text-indigo-600" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className={cn('p-5 border', STAT_CARD_THEMES.projects.card)}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Total Projects</span>
+                <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.projects.iconWrap)}>
+                  <FolderKanban className="w-4 h-4" />
+                </span>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">{metrics.enrolledProjects}</div>
-              <p className="text-xs text-slate-500 mt-1">Academic workspaces</p>
+              <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.projects.value)}>{metrics.enrolledProjects}</div>
+              <p className="text-xs text-[#475569] mt-1">Academic workspaces</p>
             </Card>
 
-            <Card className="p-5 border border-slate-200">
-              <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">Assigned Tasks</span>
-                <Clock className="w-4 h-4 text-sky-600" />
+            <Card className={cn('p-5 border', STAT_CARD_THEMES.tasks.card)}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Total Tasks</span>
+                <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.tasks.iconWrap)}>
+                  <Award className="w-4 h-4" />
+                </span>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">{metrics.totalAssignedTasks}</div>
-              <p className="text-xs text-slate-500 mt-1">
+              <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.tasks.value)}>{metrics.totalAssignedTasks}</div>
+              <p className="text-xs text-[#475569] mt-1">Avg Grade: {metrics.averageGradePercent}%</p>
+            </Card>
+
+            <Card className={cn('p-5 border', STAT_CARD_THEMES.completed.card)}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Completed Tasks</span>
+                <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.completed.iconWrap)}>
+                  <CheckCircle2 className="w-4 h-4" />
+                </span>
+              </div>
+              <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.completed.value)}>{metrics.completedTasks}</div>
+              <p className="text-xs text-[#475569] mt-1">{metrics.completionRate}% completion rate</p>
+            </Card>
+
+            <Card className={cn('p-5 border', STAT_CARD_THEMES.pending.card)}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Pending Tasks</span>
+                <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.pending.iconWrap)}>
+                  <Clock className="w-4 h-4" />
+                </span>
+              </div>
+              <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.pending.value)}>
+                {(metrics.totalAssignedTasks ?? 0) - (metrics.completedTasks ?? 0)}
+              </div>
+              <p className="text-xs text-[#475569] mt-1">
                 {metrics.inProgressTasks} In Progress • {metrics.inReviewTasks} In Review
               </p>
             </Card>
 
-            <Card className="p-5 border border-slate-200">
-              <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">Completion Rate</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <Card className={cn('p-5 border', STAT_CARD_THEMES.overdue.card)}>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#475569]">Overdue Tasks</span>
+                <span className={cn('w-8 h-8 rounded-lg flex items-center justify-center', STAT_CARD_THEMES.overdue.iconWrap)}>
+                  <AlertTriangle className="w-4 h-4" />
+                </span>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">{metrics.completionRate}%</div>
-              <p className="text-xs text-slate-500 mt-1">{metrics.completedTasks} Completed</p>
-            </Card>
-
-            <Card className="p-5 border border-slate-200">
-              <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider">Average Grade</span>
-                <Award className="w-4 h-4 text-purple-600" />
-              </div>
-              <div className="text-2xl font-extrabold text-slate-900">{metrics.averageGradePercent}%</div>
-              <p className="text-xs text-slate-500 mt-1">
-                {metrics.evaluatedSubmissions} Graded Submissions
+              <div className={cn('text-2xl font-extrabold', STAT_CARD_THEMES.overdue.value)}>{metrics.overdueTasks}</div>
+              <p className="text-xs text-[#475569] mt-1">
+                {metrics.overdueTasks > 0 ? 'Needs immediate attention' : 'All deadlines on track'}
               </p>
             </Card>
           </div>

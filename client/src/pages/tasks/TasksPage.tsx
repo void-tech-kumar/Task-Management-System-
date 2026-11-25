@@ -21,6 +21,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { priorityConfig, categoryConfig, statusConfig, formatDate } from '../../utils';
+import { TABLE_THEMES } from '../../theme/theme';
 
 export const TasksPage: React.FC = () => {
   const { user } = useAuth();
@@ -259,47 +260,47 @@ export const TasksPage: React.FC = () => {
         />
       ) : (
         /* List Table View */
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+        <div className={TABLE_THEMES.wrapper}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+              <thead className={TABLE_THEMES.thead}>
                 <tr>
-                  <th className="py-3 px-4">Task</th>
-                  <th className="py-3 px-4">Course</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Priority</th>
-                  <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Due Date</th>
-                  <th className="py-3 px-4">Assignees</th>
+                  <th className="py-3.5 px-4">Task</th>
+                  <th className="py-3.5 px-4">Course</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Priority</th>
+                  <th className="py-3.5 px-4">Category</th>
+                  <th className="py-3.5 px-4">Due Date</th>
+                  <th className="py-3.5 px-4">Assignees</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-200/80">
                 {filteredTasks.map((t) => (
                   <tr
                     key={t.id}
                     onClick={() => setSelectedTaskId(t.id)}
-                    className="hover:bg-slate-50/80 cursor-pointer transition-colors"
+                    className={`${TABLE_THEMES.row} cursor-pointer`}
                   >
-                    <td className="py-3.5 px-4 font-semibold text-slate-900">{t.title}</td>
-                    <td className="py-3.5 px-4 font-mono font-medium text-indigo-600">{t.project?.code}</td>
+                    <td className="py-3.5 px-4 font-semibold text-[#0F172A]">{t.title}</td>
+                    <td className="py-3.5 px-4 font-mono font-semibold text-[#4F46E5]">{t.project?.code}</td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full font-medium ${statusConfig[t.status].badge}`}>
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full border font-medium ${statusConfig[t.status].badge}`}>
                         {statusConfig[t.status].label}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full font-medium ${priorityConfig[t.priority].badge}`}>
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full border font-medium ${priorityConfig[t.priority].badge}`}>
                         {priorityConfig[t.priority].label}
                       </span>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex px-2 py-0.5 rounded-md font-semibold text-[10px] ${categoryConfig[t.category].badge}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-md border font-semibold text-[10px] ${categoryConfig[t.category].badge}`}>
                         {categoryConfig[t.category].label}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-600">{formatDate(t.dueDate)}</td>
+                    <td className="py-3.5 px-4 text-[#475569]">{formatDate(t.dueDate)}</td>
                     <td className="py-3.5 px-4">
-                      <span className="text-slate-500 font-medium">
+                      <span className="text-[#475569] font-medium">
                         {t.assignments?.length || 0} student(s)
                       </span>
                     </td>

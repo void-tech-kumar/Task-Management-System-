@@ -34,24 +34,24 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-indigo-50/40 to-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100/80 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex w-12 h-12 rounded-2xl bg-indigo-600 text-white items-center justify-center font-bold text-2xl shadow-lg shadow-indigo-200 mb-4">
+        <div className="inline-flex w-12 h-12 rounded-2xl bg-[#4F46E5] text-white items-center justify-center font-bold text-2xl shadow-lg shadow-indigo-200 mb-4">
           TF
         </div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        <h2 className="text-2xl font-bold tracking-tight text-[#0F172A] sm:text-3xl">
           TaskFlow Portal
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-[#475569]">
           Academic Task Management & Evaluation Platform
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-200/50 rounded-2xl border border-slate-200/80 sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-xl shadow-slate-300/40 rounded-2xl border border-[#CBD5E1] sm:px-10">
           {error && (
-            <div className="mb-4 rounded-lg bg-rose-50 border border-rose-200 p-3 flex items-start gap-2.5 text-xs text-rose-700 animate-fadeIn">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
+            <div className="mb-4 rounded-lg bg-red-50 border border-red-300 p-3 flex items-start gap-2.5 text-xs text-red-800 animate-fadeIn">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#DC2626]" />
               <span className="font-medium">{error}</span>
             </div>
           )}
@@ -90,12 +90,12 @@ export const LoginPage: React.FC = () => {
             </div>
           </form>
 
-          <div className="mt-6 rounded-lg bg-slate-50 border border-slate-200/80 p-3 text-xs text-slate-600 flex items-center justify-center gap-2">
-            <Info className="w-4 h-4 text-indigo-600 shrink-0" />
-            <span>Contact your administrator for account access</span>
+          <div className="mt-6 rounded-lg bg-blue-50/70 border border-blue-200 p-3 text-xs text-[#0F172A] flex items-center justify-center gap-2">
+            <Info className="w-4 h-4 text-[#2563EB] shrink-0" />
+            <span className="font-medium">Contact your administrator for account access</span>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
+          <div className="mt-4 pt-4 border-t border-slate-200 text-center text-xs text-[#475569]">
             TaskFlow Academic Task Management System • Role-Based Authentication
           </div>
         </div>

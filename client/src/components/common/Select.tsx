@@ -15,19 +15,19 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={selectId} className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label htmlFor={selectId} className="block text-xs font-semibold text-[#0F172A] uppercase tracking-wider mb-1.5">
             {label}
-            {props.required && <span className="text-rose-500 ml-1">*</span>}
+            {props.required && <span className="text-[#DC2626] ml-1">*</span>}
           </label>
         )}
         <select
           ref={ref}
           id={selectId}
           className={cn(
-            'block w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:bg-slate-50 disabled:text-slate-500 shadow-sm',
+            'block w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:bg-slate-100 disabled:text-[#475569] shadow-xs',
             error
-              ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200'
-              : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-200',
+              ? 'border-[#DC2626] focus:border-[#DC2626] focus:ring-red-500/20'
+              : 'border-[#CBD5E1] focus:border-[#4F46E5] focus:ring-indigo-500/20',
             className
           )}
           {...props}
@@ -41,9 +41,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             : children}
         </select>
         {error ? (
-          <p className="mt-1 text-xs text-rose-600 font-medium">{error}</p>
+          <p className="mt-1 text-xs text-[#DC2626] font-medium">{error}</p>
         ) : helperText ? (
-          <p className="mt-1 text-xs text-slate-500">{helperText}</p>
+          <p className="mt-1 text-xs text-[#475569]">{helperText}</p>
         ) : null}
       </div>
     );

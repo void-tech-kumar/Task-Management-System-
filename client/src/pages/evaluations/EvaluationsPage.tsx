@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { formatDate, formatDateTime, submissionStatusConfig } from '../../utils';
+import { TABLE_THEMES } from '../../theme/theme';
 
 export const EvaluationsPage: React.FC = () => {
   const { user } = useAuth();
@@ -84,28 +85,28 @@ export const EvaluationsPage: React.FC = () => {
           }
         />
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+        <div className={TABLE_THEMES.wrapper}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase tracking-wider font-semibold">
+              <thead className={TABLE_THEMES.thead}>
                 <tr>
-                  <th className="py-3 px-4">
+                  <th className="py-3.5 px-4">
                     {user?.role === 'STUDENT' ? 'Task & Course' : 'Student'}
                   </th>
-                  <th className="py-3 px-4">
+                  <th className="py-3.5 px-4">
                     {user?.role === 'STUDENT' ? 'Deliverable Notes' : 'Task Deliverable'}
                   </th>
-                  <th className="py-3 px-4">Submitted At</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Score & Remarks</th>
-                  {user?.role !== 'STUDENT' && <th className="py-3 px-4 text-right">Action</th>}
+                  <th className="py-3.5 px-4">Submitted At</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Score & Remarks</th>
+                  {user?.role !== 'STUDENT' && <th className="py-3.5 px-4 text-right">Action</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-200/80">
                 {submissions.map((sub) => {
                   const statusConf = submissionStatusConfig[sub.status];
                   return (
-                    <tr key={sub.id} className="hover:bg-slate-50/80 transition-colors">
+                    <tr key={sub.id} className={TABLE_THEMES.row}>
                       {/* Column 1: Student or Course */}
                       <td className="py-3.5 px-4">
                         {user?.role === 'STUDENT' ? (

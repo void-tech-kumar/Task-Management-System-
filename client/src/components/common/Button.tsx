@@ -30,17 +30,17 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm focus:ring-indigo-500 active:scale-[0.98]',
+      'bg-[#4F46E5] hover:bg-indigo-700 text-white shadow-sm focus:ring-[#4F46E5] active:scale-[0.98]',
     secondary:
-      'bg-slate-800 hover:bg-slate-900 text-white shadow-sm focus:ring-slate-700 active:scale-[0.98]',
+      'bg-[#2563EB] hover:bg-blue-700 text-white shadow-sm focus:ring-[#2563EB] active:scale-[0.98]',
     outline:
-      'border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm focus:ring-indigo-500 active:scale-[0.98]',
+      'border border-[#CBD5E1] bg-white hover:bg-slate-100 text-[#0F172A] shadow-xs focus:ring-[#4F46E5] active:scale-[0.98]',
     danger:
-      'bg-rose-600 hover:bg-rose-700 text-white shadow-sm focus:ring-rose-500 active:scale-[0.98]',
+      'bg-[#DC2626] hover:bg-red-700 text-white shadow-sm focus:ring-[#DC2626] active:scale-[0.98]',
     success:
-      'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm focus:ring-emerald-500 active:scale-[0.98]',
+      'bg-[#16A34A] hover:bg-green-700 text-white shadow-sm focus:ring-[#16A34A] active:scale-[0.98]',
     ghost:
-      'text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:ring-slate-400',
+      'text-[#475569] hover:text-[#0F172A] hover:bg-slate-200/70 focus:ring-slate-400',
   };
 
   return (

@@ -39,40 +39,40 @@ export function getDueStatus(dueDateString: string, isCompleted: boolean) {
   if (diffHours < 0) {
     return {
       label: `Overdue by ${Math.abs(Math.round(diffHours / 24))}d`,
-      color: 'text-rose-700 bg-rose-50 border-rose-200 font-semibold animate-pulse',
+      color: 'text-red-700 bg-red-50 border-red-300 font-semibold',
       isOverdue: true,
     };
   } else if (diffHours <= 24) {
     return {
       label: `Due in ${diffHours}h`,
-      color: 'text-amber-700 bg-amber-50 border-amber-200 font-medium',
+      color: 'text-amber-800 bg-amber-50 border-amber-300 font-medium',
       isUrgent: true,
     };
   } else if (diffHours <= 72) {
     return {
       label: `Due in ${Math.round(diffHours / 24)}d`,
-      color: 'text-orange-700 bg-orange-50 border-orange-200',
+      color: 'text-orange-800 bg-orange-50 border-orange-300',
     };
   } else {
     return {
       label: `Due ${formatDate(dueDateString)}`,
-      color: 'text-slate-600 bg-slate-50 border-slate-200',
+      color: 'text-[#475569] bg-slate-100 border-[#CBD5E1]',
     };
   }
 }
 
 export const priorityConfig: Record<Priority, { label: string; badge: string }> = {
-  LOW: { label: 'Low', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-  MEDIUM: { label: 'Medium', badge: 'bg-sky-50 text-sky-700 border-sky-200' },
-  HIGH: { label: 'High', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
-  URGENT: { label: 'Urgent', badge: 'bg-rose-50 text-rose-700 border-rose-200 font-semibold' },
+  LOW: { label: 'Low', badge: 'bg-slate-100 text-slate-800 border-slate-300' },
+  MEDIUM: { label: 'Medium', badge: 'bg-blue-50 text-blue-800 border-blue-300' },
+  HIGH: { label: 'High', badge: 'bg-amber-50 text-amber-800 border-amber-300' },
+  URGENT: { label: 'Urgent', badge: 'bg-red-50 text-red-800 border-red-300 font-semibold' },
 };
 
 export const statusConfig: Record<TaskStatus, { label: string; badge: string; color: string }> = {
-  TODO: { label: 'To Do', badge: 'bg-slate-100 text-slate-700 border-slate-200', color: '#64748b' },
-  IN_PROGRESS: { label: 'In Progress', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200', color: '#6366f1' },
-  IN_REVIEW: { label: 'In Review', badge: 'bg-amber-50 text-amber-700 border-amber-200', color: '#f59e0b' },
-  COMPLETED: { label: 'Completed', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', color: '#10b981' },
+  TODO: { label: 'To Do', badge: 'bg-slate-100 text-slate-800 border-slate-300', color: '#475569' },
+  IN_PROGRESS: { label: 'In Progress', badge: 'bg-blue-50 text-blue-800 border-blue-300', color: '#2563EB' },
+  IN_REVIEW: { label: 'In Review', badge: 'bg-amber-50 text-amber-800 border-amber-300', color: '#D97706' },
+  COMPLETED: { label: 'Completed', badge: 'bg-green-50 text-green-800 border-green-300', color: '#16A34A' },
 };
 
 export const categoryConfig: Record<TaskCategory, { label: string; badge: string }> = {
